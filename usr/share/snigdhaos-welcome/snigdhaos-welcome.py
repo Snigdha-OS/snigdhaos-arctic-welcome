@@ -298,12 +298,12 @@ class Main(Gtk.Window):
                     flags=0,
                     message_type=Gtk.MessageType.WARNING,
                     buttons=Gtk.ButtonsType.NONE,
-                    text="%s was not found" % "gparted",
-                    title="Warning",
+                    text="%s was not found 😐" % "GParted",
+                    title="Package Not Found ❌",
                 )
                 md.add_buttons("Yes", 1)
                 md.add_buttons("No", 0)
-                md.format_secondary_markup("Install the package?")
+                md.format_secondary_markup("Do you want to install the package now❔")
                 response = md.run()
                 md.destroy()
 
@@ -357,12 +357,12 @@ class Main(Gtk.Window):
                     flags=0,
                     message_type=Gtk.MessageType.WARNING,
                     buttons=Gtk.ButtonsType.NONE,
-                    text="%s was not found\n" % "arandr",
-                    title="Warning",
+                    text="%s was not found 😐\n" % "Arandr",
+                    title="Package Not Found ❌",
                 )
                 md.add_buttons("Yes", 1)
                 md.add_buttons("No", 0)
-                md.format_secondary_markup("Let Snigdha OS - Welcome install it ?")
+                md.format_secondary_markup("Do you want to install the package now ❔")
                 response = md.run()
                 md.destroy()
 
