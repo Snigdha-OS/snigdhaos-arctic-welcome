@@ -64,7 +64,7 @@ label#label_style_eshan {
     border-radius: 0px;
     font-size: 16px;
     font-weight: bold;
-    color: #2B65EC;
+    color: #F8C8DC;
 }
 """
 

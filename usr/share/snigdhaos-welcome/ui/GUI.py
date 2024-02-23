@@ -192,93 +192,6 @@ def GUI(self, Gtk, GdkPixbuf):
         "https://github.com/snigdhalinux",
     )
 
-    # discord
-    # ds_event = Gtk.EventBox()
-    # pbds = GdkPixbuf.Pixbuf().new_from_file_at_size(
-    #     os.path.join(base_dir, "images/discord.png"), 28, 28
-    # )
-    # dsimage = Gtk.Image().new_from_pixbuf(pbds)
-    # ds_event.add(dsimage)
-    # ds_event.connect(
-    #     "button_press_event",
-    #     self.on_social_clicked,
-    #     app_discord,
-    # )
-
-    # youtube
-    # yt_event = Gtk.EventBox()
-    # pbyt = GdkPixbuf.Pixbuf().new_from_file_at_size(
-    #     os.path.join(base_dir, "images/youtube.png"), 28, 28
-    # )
-    # ytimage = Gtk.Image().new_from_pixbuf(pbyt)
-    # yt_event.add(ytimage)
-    # yt_event.connect(
-    #     "button_press_event",
-    #     self.on_social_clicked,
-    #     "https://youtube.com/c/erikdubois",
-    # )
-
-    # instagram
-    # insta_event = Gtk.EventBox()
-    # pbinsta = GdkPixbuf.Pixbuf().new_from_file_at_size(
-    #     os.path.join(base_dir, "images/insta.png"), 28, 28
-    # )
-    # instaimage = Gtk.Image().new_from_pixbuf(pbinsta)
-    # insta_event.add(instaimage)
-    # insta_event.connect(
-    #     "button_press_event",
-    #     self.on_social_clicked,
-    #     "https://www.instagram.com/arcolinux/",
-    # )
-
-    # linkedin
-    # lin_event = Gtk.EventBox()
-    # pblin = GdkPixbuf.Pixbuf().new_from_file_at_size(
-    #     os.path.join(base_dir, "images/linkedin.png"), 28, 28
-    # )
-    # linimage = Gtk.Image().new_from_pixbuf(pblin)
-    # lin_event.add(linimage)
-    # lin_event.connect(
-    #     "button_press_event",
-    #     self.on_social_clicked,
-    #     "https://www.linkedin.com/in/arcolinux/",
-    # )
-
-    # patreon
-    # pat_event = Gtk.EventBox()
-    # pbpat = GdkPixbuf.Pixbuf().new_from_file_at_size(
-    #     os.path.join(base_dir, "images/patreon.png"), 28, 28
-    # )
-    # patimage = Gtk.Image().new_from_pixbuf(pbpat)
-    # pat_event.add(patimage)
-    # pat_event.connect(
-    #     "button_press_event",
-    #     self.on_social_clicked,
-    #     "https://www.patreon.com/arcolinux",
-    # )
-
-    # element
-    # el_event = Gtk.EventBox()
-    # pbel = GdkPixbuf.Pixbuf().new_from_file_at_size(
-    #     os.path.join(base_dir, "images/element.png"), 28, 28
-    # )
-    # elimage = Gtk.Image().new_from_pixbuf(pbel)
-    # el_event.add(elimage)
-    # el_event.connect(
-    #     "button_press_event",
-    #     self.on_social_clicked,
-    #     "https://app.element.io/#/room/!jUDkosOsuDbGWNzKYl:matrix.org",
-    # )
-
-    # att
-    # att_event = Gtk.EventBox()
-    # pbatt = GdkPixbuf.Pixbuf().new_from_file_at_size(
-    #     os.path.join(base_dir, "images/archlinux-tweak-tool.svg"), 28, 28
-    # )
-    # attimage = Gtk.Image().new_from_pixbuf(pbatt)
-    # att_event.add(attimage)
-    # att_event.connect("button_press_event", self.on_launch_clicked, "")
-
     label_social_padding = Gtk.Label(xalign=0, yalign=0)
     label_social_padding.set_text("     ")
 
@@ -286,40 +199,14 @@ def GUI(self, Gtk, GdkPixbuf):
     fb_event.set_property("has-tooltip", True)
     tw_event.set_property("has-tooltip", True)
     mew_event.set_property("has-tooltip", True)
-    # insta_event.set_property("has-tooltip", True)
-    # lin_event.set_property("has-tooltip", True)
-    # el_event.set_property("has-tooltip", True)
-    # pat_event.set_property("has-tooltip", True)
-    # yt_event.set_property("has-tooltip", True)
-    # ds_event.set_property("has-tooltip", True)
-    # tg_event.set_property("has-tooltip", True)
-    # att_event.set_property("has-tooltip", True)
 
     fb_event.connect("query-tooltip", self.tooltip_callback, "Facebook")
     tw_event.connect("query-tooltip", self.tooltip_callback, "Twitter")
     mew_event.connect("query-tooltip", self.tooltip_callback, "Github")
-    # insta_event.connect("query-tooltip", self.tooltip_callback, "Instagram")
-    # lin_event.connect("query-tooltip", self.tooltip_callback, "LinkedIn")
-    # el_event.connect("query-tooltip", self.tooltip_callback, "Element")
-    # el_event.connect("query-tooltip", self.tooltip_callback, "Element-Matrix")
-    # pat_event.connect("query-tooltip", self.tooltip_callback, "Patreon")
-    # yt_event.connect("query-tooltip", self.tooltip_callback, "YouTube")
-    # ds_event.connect("query-tooltip", self.tooltip_callback, "Discord")
-    # tg_event.connect("query-tooltip", self.tooltip_callback, "Telegram")
-    # att_event.connect("query-tooltip", self.tooltip_callback, "Arch Linux Tweak Tool")
 
     hbox_social_img.add(fb_event)
     hbox_social_img.add(tw_event)
     hbox_social_img.add(mew_event)
-    # hbox_social_img.add(insta_event)
-    # hbox_social_img.add(lin_event)
-    # hbox_social_img.add(el_event)
-    # hbox_social_img.add(pat_event)
-    # hbox_social_img.add(label_social_padding)
-    # hbox_social_img.add(yt_event)
-    # hbox_social_img.add(ds_event)
-    # hbox_social_img.add(tg_event)
-    # hbox_social_img.add(att_event)
 
     label_info_header1 = Gtk.Label(xalign=0, yalign=0)
     label_info_header1.set_name("label_style")
@@ -369,90 +256,39 @@ def GUI(self, Gtk, GdkPixbuf):
     label_info.set_markup(desc)
     label_info.set_justify(Gtk.Justification.CENTER)
 
-    # ======================================================================
-    #                   PACK THE INFO BOX
-    # ======================================================================
-
     vbox_info.pack_start(label_info_header1, False, False, 0)
     vbox_info.pack_start(label_info, False, False, 0)
     if len(label_info2.get_text()) > 0:
         vbox_info.pack_start(label_info_header2, False, False, 0)
         vbox_info.pack_start(label_info2, False, False, 0)
-
     vbox_info.pack_start(hbox_social_links, False, False, 0)
     vbox_info.pack_start(hbox_social_img, False, False, 0)
 
-    # ======================================================================
-    #                   ADD PAGES TO STACK
-    # ======================================================================
-
-    # if debug is True:
-    #     stack.add_titled(vbox_install_stack, "Installation", "Installation")
-    # else:
-    #     stack.add_titled(vbox_install_stack, "Welcome", "Welcome")
     stack.add_titled(vbox_install_stack, "Install Snigdha OS", "Install Snigdha OS")
-
-    # stack.add_titled(vbox_info_stack, "Information", "Information")
-    # stack.add_titled(vbox_credits_stack, "Developers", "Developers")
-
     autostart = eval(self.load_settings())
-
     hbox_notify = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
     hbox_notify.set_halign(Gtk.Align.CENTER)
-
     hbox_footer_buttons = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
-
-    # ======================================================================
-    #                   NOTIFY LABEL
-    # ======================================================================
-
     self.label_notify = Gtk.Label(xalign=0.5, yalign=0.5)
     self.label_notify.set_justify(Gtk.Justification.CENTER)
     hbox_notify.pack_end(self.label_notify, False, False, 0)
-
-    # ======================================================================
-    #                   WELCOME LABEL
-    # ======================================================================
-
-    # label_welcome = Gtk.Label(xalign=0.5, yalign=0.5)
-    # label_welcome.set_markup("<big>Welcome to <b>ArcoLinux</b></big>")
-
-    # ======================================================================
-    #                  ARCO IMAGE
-    # ======================================================================
-
     pixbuf = GdkPixbuf.Pixbuf().new_from_file_at_size(
         os.path.join(base_dir, "images/snigdhaos-welcome.png"), 300, 300
     )
     image = Gtk.Image().new_from_pixbuf(pixbuf)
 
-    # ======================================================================
-    #                   WELCOME LABEL
-    # ======================================================================
-
     label_welcome_message = Gtk.Label(xalign=0, yalign=0)
     label_welcome_message.set_name("label_style_eshan")
-
     if username == user:
         label_welcome_message.set_text(
             "Use Offline Installation in case Online Installation fails!"
         )
     else:
         label_welcome_message.set_text(
-            "The options below will help you get started on Snigdha OS\nIf You are having any problem, just raise your issue in our forum!"
+            "The options below will help you get started on Snigdha OS\nIf You are having any problem, Feel free to ask on our forum!"
         )
-
     vbox_welcome_title.pack_start(image, True, False, 0)
     vbox_welcome_message.pack_start(label_welcome_message, True, False, 0)
-
-    # ======================================================================
-    #                   MAIN BUTTONS
-    # ======================================================================
-
-    # ======================================================================
-    #                   BUTTON - GPARTED
-    # ======================================================================
-
     button_gparted = Gtk.Button(label="")
     button_gparted_label = button_gparted.get_child()
     button_gparted_label.set_markup("Run GParted")
@@ -460,10 +296,6 @@ def GUI(self, Gtk, GdkPixbuf):
     button_gparted.set_size_request(100, 50)
     button_gparted.set_property("has-tooltip", True)
     button_gparted.connect("query-tooltip", self.tooltip_callback, "Launch GParted")
-
-    # ======================================================================
-    #                   BUTTON - EASY INSTALL
-    # ======================================================================
 
     self.button_easy_install = Gtk.Button(label="")
     button_easy_install_label = self.button_easy_install.get_child()
@@ -476,13 +308,8 @@ def GUI(self, Gtk, GdkPixbuf):
     self.button_easy_install.connect(
         "query-tooltip", self.tooltip_callback, "No internet connection required"
     )
-    # ======================================================================
-    #                   BUTTON - ADV INSTALL
-    # ======================================================================
-
     self.button_adv_install = Gtk.Button(label="")
     button_adv_label = self.button_adv_install.get_child()
-
     button_adv_label.set_markup(
         "<span size='large'>Online Installation</span>"
     )
@@ -492,53 +319,15 @@ def GUI(self, Gtk, GdkPixbuf):
     self.button_adv_install.connect(
         "query-tooltip", self.tooltip_callback, "Internet connection required!"
     )
-
-    # ======================================================================
-    #                   BUTTON - MIRRORS
-    # ======================================================================
-
     self.button_mirrors = Gtk.Button(label="")
     button_mirrors_label = self.button_mirrors.get_child()
-
     button_mirrors_label.set_markup("Update Mirrors")
-
     self.button_mirrors.connect("clicked", self.on_mirror_clicked)
     self.button_mirrors.set_size_request(100, 50)
     self.button_mirrors.set_property("has-tooltip", True)
     self.button_mirrors.connect(
         "query-tooltip", self.tooltip_callback, "Update Mirrorlist"
     )
-
-    # ======================================================================
-    #                   BUTTON - ATT
-    # ======================================================================
-
-    # self.button_att = Gtk.Button(label="")
-    # button_att_label = self.button_att.get_child()
-    # button_att_label.set_markup(
-    #     "<span size='large'><b>Launch Arch Linux Tweak Tool</b></span>"
-    # )
-    # self.button_att.connect("clicked", self.on_buttonatt_clicked)
-    # self.button_att.set_property("has-tooltip", True)
-    # self.button_att.connect(
-    #     "query-tooltip", self.tooltip_callback, "Launch Arch Linux Tweak Tool"
-    # )
-
-    # ======================================================================
-    #                   BUTTON - SOFI
-    # ======================================================================
-
-    # self.button_sofi = Gtk.Button(label="")
-    # button_sofi_label = self.button_sofi.get_child()
-    # button_sofi_label.set_markup("<span size='large'><b>Install Software</b></span>")
-    # self.button_sofi.connect("clicked", self.on_button_sofi_clicked)
-    # self.button_sofi.set_property("has-tooltip", True)
-    # self.button_sofi.connect("query-tooltip", self.tooltip_callback, "Launch Sofirem")
-
-    # ======================================================================
-    #                   BUTTON - ARANDR
-    # ======================================================================
-
     button_resolution = Gtk.Button(label="Fix Screen Resolution")
     button_resolution.set_size_request(100, 50)
     button_resolution.set_property("has-tooltip", True)
@@ -548,46 +337,21 @@ def GUI(self, Gtk, GdkPixbuf):
     if username == user:
         hbox_util_buttons.pack_start(self.button_mirrors, False, True, 0)
         hbox_util_buttons.pack_start(button_gparted, False, True, 0)
-
         if self.session == "x11":
             hbox_util_buttons.pack_start(button_resolution, False, True, 0)
-
         hbox_install_buttons.pack_start(self.button_easy_install, True, True, 0)
         hbox_install_buttons.pack_end(self.button_adv_install, True, True, 0)
 
     else:
-        # self.button_att.set_size_request(100, 30)
-        # self.button_sofi.set_size_request(100, 30)
 
         self.button_mirrors.get_child().set_markup("Update Mirrors")
 
-        # self.button_att.get_child().set_markup("<b>Launch Arch Linux Tweak Tool</b>")
-
-        # self.button_sofi.get_child().set_markup("<b>Install Software</b>")
-
         button_resolution.get_child().set_markup("<b>Screen Resolution</b>")
 
-        # hbox_install_buttons.pack_start(self.button_sofi, False, True, 0)
-        # hbox_install_buttons.pack_start(self.button_att, False, True, 0)
         hbox_install_buttons.pack_start(self.button_mirrors, False, True, 0)
-
-        # self.button_arco_website = Gtk.Button(label="")
-        # self.button_arco_website.get_child().set_markup("<b>ArcoLinux Website</b>")
-        # self.button_arco_website.set_size_request(100, 30)
-        #
-        # self.button_probe = Gtk.Button(label="")
-        # self.button_probe.get_child().set_markup("<b>Run Probe</b>")
-        # self.button_probe.set_size_request(100, 30)
-
-        # hbox_second_row_buttons.pack_start(self.button_arco_website,False,True,0)
-        # hbox_second_row_buttons.pack_start(self.button_probe,False,True,0)
 
         if self.session == "x11":
             hbox_install_buttons.pack_start(button_resolution, False, True, 0)
-
-    # ======================================================================
-    #                   USER INFO
-    # ======================================================================
 
     label_creds = Gtk.Label(xalign=0)
     label_creds.set_markup("User: liveuser | Pass: No Password")
@@ -596,10 +360,6 @@ def GUI(self, Gtk, GdkPixbuf):
     hbox_user = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
 
     hbox_user.pack_start(label_creds, False, False, 0)
-
-    # ======================================================================
-    #                   CREDITS
-    # ======================================================================
 
     label_credits_title = Gtk.Label(xalign=0.5, yalign=0.5)
     label_credits_title.set_name("label_style")
@@ -620,12 +380,7 @@ def GUI(self, Gtk, GdkPixbuf):
         f"Eshanized\n"
         f"Iconized\n"
         f"Snigdha\n"
-        # f"Eshanized\n"
-        # f"For support, or to report any issues use <b><a href='{app_discord}' title='{app_discord}'>Discord</a></b>"
     )
-    # label_credits.set_markup(
-    #     f"Eshanized\n"
-    # )
     label_credits.set_justify(Gtk.Justification.CENTER)
     label_credits.set_line_wrap(True)
     label_credits.set_halign(Gtk.Align.CENTER)
@@ -634,20 +389,12 @@ def GUI(self, Gtk, GdkPixbuf):
     vbox_credits.pack_start(label_credits, False, False, 0)
     vbox_credits.pack_start(label_credits_support, False, False, 0)
 
-    # ======================================================================
-    #                   QUIT BUTTON
-    # ======================================================================
-
     button_quit = Gtk.Button(label="")
     button_quit.get_child().set_markup("EXIT")
     button_quit.set_size_request(100, 40)
     button_quit.connect("clicked", Gtk.main_quit)
 
     vbox_quit.pack_start(button_quit, False, False, 0)
-
-    # ======================================================================
-    #                   Add to startup
-    # ======================================================================
 
     check = Gtk.CheckButton(label="Autostart")
     check.set_property("has-tooltip", True)
@@ -670,10 +417,6 @@ def GUI(self, Gtk, GdkPixbuf):
         self.vbox.pack_end(vbox_auto_start, True, False, 0)
     else:
         hbox_footer_buttons.pack_end(check, False, False, 0)
-
-    # ======================================================================
-    #                   PACK TO WINDOW
-    # ======================================================================
 
     self.vbox.pack_start(hbox_notify, False, False, 5)  # notify label
 
