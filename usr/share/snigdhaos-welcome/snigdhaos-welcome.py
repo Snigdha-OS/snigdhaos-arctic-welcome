@@ -303,7 +303,7 @@ class Main(Gtk.Window):
                 )
                 md.add_buttons("Yes", 1)
                 md.add_buttons("No", 0)
-                md.format_secondary_markup("Let Snigdha OS - Welcome install it ?")
+                md.format_secondary_markup("Install the package?")
                 response = md.run()
                 md.destroy()
 
