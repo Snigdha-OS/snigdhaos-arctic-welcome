@@ -94,29 +94,18 @@ class Main(Gtk.Window):
             self.style_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
         )
-
         # a queue to store package install progress
         self.pkg_queue = Queue()
-
         # default pacman lockfile
         self.pacman_lockfile = "/var/lib/pacman/db.lck"
-
         # get the username of the user running the welcome app
         self.sudo_username = os.getlogin()
-
         self.calamares_polkit = "/usr/bin/calamares_polkit"
-
         self.session = None
-
         self.get_session()
-
         GUI.GUI(self, Gtk, GdkPixbuf)
-
         if GUI.username == GUI.user:
-            threading.Thread(
-                target=self.internet_notifier, args=(), daemon=True
-            ).start()
-
+            threading.Thread(target=self.internet_notifier, args=(), daemon=True).start()
     # returns the login session
     def get_session(self):
         try:
