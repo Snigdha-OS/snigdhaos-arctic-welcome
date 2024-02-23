@@ -1,5 +1,6 @@
 # Author : ArcoLinux & Team
 # Adopted for Snigdha OS Installation
+
 #!/usr/bin/env python3
 import gi
 import os
@@ -10,13 +11,9 @@ import shutil
 import socket
 from time import sleep
 from queue import Queue
-
 import ui.GUI as GUI
 from ui.MessageDialog import MessageDialogBootloader
-# from ui.MessageDialog import MessageDialog
-
 gi.require_version("Gtk", "3.0")
-# gi.require_version("Wnck", "3.0")
 from gi.repository import Gtk, GdkPixbuf, GLib, Gdk 
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
@@ -73,48 +70,32 @@ class Main(Gtk.Window):
         super(Main, self).__init__(title="Snigdha OS Welcome - Arctic")
         self.set_border_width(10)
         self.set_default_size(860, 450)
-        self.set_icon_from_file(os.path.join(base_dir, "images/snigdhaos-icon.png"))
+        self.set_icon_from_file(os.path.join(base_dir, "images/snigdhaos-welcome-small.png"))
         self.set_position(Gtk.WindowPosition.CENTER)
         self.results = ""
-
         if not os.path.exists(GUI.home + "/.config/snigdhaos-welcome/"):
             os.mkdir(GUI.home + "/.config/snigdhaos-welcome/")
             with open(GUI.Settings, "w") as f:
                 f.write("autostart=True")
                 f.close()
-
         self.style_provider = Gtk.CssProvider()
         self.style_provider.load_from_data(css, len(css))
-
         Gtk.StyleContext.add_provider_for_screen(
             Gdk.Screen.get_default(),
             self.style_provider,
             Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
         )
-
-        # a queue to store package install progress
         self.pkg_queue = Queue()
-
-        # default pacman lockfile
         self.pacman_lockfile = "/var/lib/pacman/db.lck"
-
-        # get the username of the user running the welcome app
         self.sudo_username = os.getlogin()
-
         self.calamares_polkit = "/usr/bin/calamares_polkit"
-
         self.session = None
-
         self.get_session()
-
         GUI.GUI(self, Gtk, GdkPixbuf)
-
         if GUI.username == GUI.user:
             threading.Thread(
                 target=self.internet_notifier, args=(), daemon=True
             ).start()
-
-    # returns the login session
     def get_session(self):
         try:
             self.session = os.environ.get("XDG_SESSION_TYPE")
@@ -130,13 +111,9 @@ class Main(Gtk.Window):
         else:
             self.popover.show_all()
 
-    # check if path exists
-    # used to check if /sys/firmware/efi/fw_platform_size exists
-    # if yes then display systemd-boot bootloader install option
     def file_check(self, path):
         if os.path.isfile(path):
             return True
-
         return False
 
     def on_mirror_clicked(self, widget):
@@ -151,31 +128,24 @@ class Main(Gtk.Window):
         blue = int(rgba_color.blue * 255)
         return "#{r:02x}{g:02x}{b:02x}".format(r=red, g=green, b=blue)
 
-    # offline install option
     def on_easy_install_clicked(self, widget):
         if not os.path.exists(self.pacman_lockfile):
             widget.set_name("button_easy_install_enabled")
             widget.get_child().set_markup(
                 "<span size='large'>Offline Installation</span>"
             )
-            # DEPRECATED NOTICE: get_style_context deprecated in gtk 4.10 and will be removed in gtk 5.0
             selected_bg_color = widget.get_style_context().lookup_color(
                 "theme_selected_bg_color"
             )
             if selected_bg_color[0] is True:
                 theme_bg_hex_color = self.convert_to_hex(selected_bg_color[1])
-
                 custom_css = css.replace("@theme_base_color_button", theme_bg_hex_color)
-
                 self.style_provider.load_from_data(custom_css, len(custom_css))
-
             self.button_adv_install.set_name("button_adv_install")
-
             settings_beginner_file = "/etc/calamares/settings-beginner.conf"
             packages_no_sys_update_file = (
                 "/etc/calamares/modules/packages-no-system-update.conf"
             )
-
             app_cmd = [
                 "sudo",
                 "cp",
@@ -183,18 +153,14 @@ class Main(Gtk.Window):
                 "/etc/calamares/settings.conf",
             ]
             threading.Thread(target=self.run_app, args=(app_cmd,), daemon=True).start()
-
             app_cmd = [
                 "sudo",
                 "cp",
                 packages_no_sys_update_file,
                 "/etc/calamares/modules/packages.conf",
             ]
-
             threading.Thread(target=self.run_app, args=(app_cmd,), daemon=True).start()
-
             efi_file_check = self.file_check("/sys/firmware/efi/fw_platform_size")
-
             if efi_file_check is True:
                 md = MessageDialogBootloader(
                     title="Choose Bootloader",
@@ -204,7 +170,6 @@ class Main(Gtk.Window):
                     calamares_polkit=self.calamares_polkit,
                 )
                 md.show_all()
-
             else:
                 subprocess.Popen([self.calamares_polkit, "-d"], shell=False)
         else:
@@ -224,30 +189,22 @@ class Main(Gtk.Window):
             md.run()
             md.destroy()
 
-    # online install option
     def on_adv_install_clicked(self, widget):
         if not os.path.exists(self.pacman_lockfile):
             widget.set_name("button_adv_install_enabled")
             widget.get_child().set_markup(
                 "<span size='large'>Online Installation</span>"
             )
-
-            # DEPRECATED NOTICE: get_style_context deprecated in gtk 4.10 and will be removed in gtk 5.0
             selected_bg_color = widget.get_style_context().lookup_color(
                 "theme_selected_bg_color"
             )
             if selected_bg_color[0] is True:
                 theme_bg_hex_color = self.convert_to_hex(selected_bg_color[1])
-
                 custom_css = css.replace("@theme_base_color_button", theme_bg_hex_color)
-
                 self.style_provider.load_from_data(custom_css, len(custom_css))
-
             self.button_easy_install.set_name("button_easy_install")
-
             settings_adv_file = "/etc/calamares/settings-advanced.conf"
             system_update_file = "/etc/calamares/modules/packages-system-update.conf"
-
             app_cmd = [
                 "sudo",
                 "cp",
@@ -255,18 +212,14 @@ class Main(Gtk.Window):
                 "/etc/calamares/settings.conf",
             ]
             threading.Thread(target=self.run_app, args=(app_cmd,), daemon=True).start()
-
             app_cmd = [
                 "sudo",
                 "cp",
                 system_update_file,
                 "/etc/calamares/modules/packages.conf",
             ]
-
             threading.Thread(target=self.run_app, args=(app_cmd,), daemon=True).start()
-
             efi_file_check = self.file_check("/sys/firmware/efi/fw_platform_size")
-
             if efi_file_check is True:
                 md = MessageDialogBootloader(
                     title="Choose Bootloader",
@@ -276,10 +229,8 @@ class Main(Gtk.Window):
                     calamares_polkit=self.calamares_polkit,
                 )
                 md.show_all()
-
             else:
                 subprocess.Popen([self.calamares_polkit, "-d"], shell=False)
-
         else:
             print(
                 "[ERROR]: Pacman lockfile found %s, is another pacman process running ?"
@@ -296,7 +247,6 @@ class Main(Gtk.Window):
             )
             md.run()
             md.destroy()
-
     def on_gp_clicked(self, widget):
         app_cmd = ["/usr/bin/gparted"]
         pacman_cmd = [
@@ -322,7 +272,6 @@ class Main(Gtk.Window):
                 md.format_secondary_markup("Let Snigdha OS - Welcome install it ?")
                 response = md.run()
                 md.destroy()
-
                 if response == 1:
                     threading.Thread(
                         target=self.check_package_queue, daemon=True
@@ -365,7 +314,6 @@ class Main(Gtk.Window):
             "--noconfirm",
             "--needed",
         ]
-
         if not self.check_package_installed("arandr"):
             if not os.path.exists(self.pacman_lockfile):
                 md = Gtk.MessageDialog(
@@ -381,7 +329,6 @@ class Main(Gtk.Window):
                 md.format_secondary_markup("Let Snigdha OS - Welcome install it ?")
                 response = md.run()
                 md.destroy()
-
                 if response == 1:
                     threading.Thread(
                         target=self.check_package_queue, daemon=True
@@ -411,10 +358,8 @@ class Main(Gtk.Window):
                 )
                 md.run()
                 md.destroy()
-
         else:
             threading.Thread(target=self.run_app, args=(app_cmd,), daemon=True).start()
-
     def remove_dev_package(self, pacman_cmd, package):
         try:
             self.label_notify.set_name("label_style")
@@ -429,7 +374,6 @@ class Main(Gtk.Window):
             GLib.idle_add(
                 self.label_notify.hide,
             )
-
             with subprocess.Popen(
                 pacman_cmd,
                 stdout=subprocess.PIPE,
@@ -469,7 +413,6 @@ class Main(Gtk.Window):
                         "<span foreground='red'><b>Failed to remove dev package %s</b></span>"
                         % package,
                     )
-
         except Exception as e:
             print("[ERROR]: Exception in remove_dev_package(): %s" % e)
             self.label_notify.set_name("label_style")
@@ -481,16 +424,13 @@ class Main(Gtk.Window):
                 "<span foreground='red'><b>Failed to remove dev package %s</b></span>"
                 % package,
             )
-
     def install_package(self, app_cmd, pacman_cmd, package):
         try:
             self.label_notify.set_name("label_style")
-
             GLib.idle_add(
                 self.label_notify.set_markup,
                 "<span foreground='cyan'><b>Installing %s</b></span>" % package,
             )
-
             with subprocess.Popen(
                 pacman_cmd,
                 stdout=subprocess.PIPE,
@@ -501,10 +441,8 @@ class Main(Gtk.Window):
                 while True:
                     if process.poll() is not None:
                         break
-
                     for line in process.stdout:
                         print(line.strip())
-
                 if self.check_package_installed(package):
                     self.pkg_queue.put((0, app_cmd, package))
                     print("[INFO]: Pacman package install completed")
@@ -532,7 +470,6 @@ class Main(Gtk.Window):
                         "<span foreground='orange'><b>Package %s install failed</b></span>"
                         % package,
                     )
-
         except Exception as e:
             print("[ERROR]: Exception in install_package(): %s" % e)
             self.label_notify.set_name("label_style")
@@ -670,21 +607,14 @@ class Main(Gtk.Window):
         subprocess.run(
             [
                 "pkexec",
-                "/usr/bin/reflector",
-                "--age",
-                "6",
-                "--latest",
-                "21",
-                "--fastest",
-                "21",
-                "--threads",
-                "21",
-                "--sort",
-                "rate",
-                "--protocol",
-                "https",
+                "/usr/bin/rate-mirrors",
+                "--concurrency",
+                "40",
+                "--disable-comments",
+                "--allow-root",
                 "--save",
                 "/etc/pacman.d/mirrorlist",
+                "arch",
             ],
             shell=False,
         )
@@ -704,7 +634,7 @@ class Main(Gtk.Window):
                 "--disable-comments",
                 "--allow-root",
                 "--save",
-                "/etc/pacman.d/mirrorlist",
+                "/etc/pacman.d/chaotic-mirrorlist",
                 "chaotic-aur",
             ],
             shell=False,
@@ -712,7 +642,6 @@ class Main(Gtk.Window):
         print("Update mirrors completed")
         GLib.idle_add(self.label_notify.set_markup, "<b>Mirrorlist updated</b>")
         GLib.idle_add(self.button_mirrors.set_sensitive, True)
-
 
     def MessageBox(self, title, message):
         md = Gtk.MessageDialog(
