@@ -1,1 +1,0 @@
-snigdhaos-welcome.png
