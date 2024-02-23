@@ -1,10 +1,9 @@
+# Author : ArcoLinux & Team
+# Adopted for Snigdha OS Installation
 #!/usr/bin/env python3
-
 import gi
 import os
 import conflicts
-# import sys
-# import wnck
 import subprocess
 import threading
 import shutil
@@ -14,11 +13,11 @@ from queue import Queue
 
 import ui.GUI as GUI
 from ui.MessageDialog import MessageDialogBootloader
-from ui.MessageDialog import MessageDialog
+# from ui.MessageDialog import MessageDialog
 
 gi.require_version("Gtk", "3.0")
 # gi.require_version("Wnck", "3.0")
-from gi.repository import Gtk, GdkPixbuf, GLib, Gdk  # Wnck
+from gi.repository import Gtk, GdkPixbuf, GLib, Gdk 
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 REMOTE_SERVER = "www.google.com"
