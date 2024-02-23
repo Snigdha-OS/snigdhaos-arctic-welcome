@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=Snigdha OS Welcome App
+GenericName=Snigdha OS Welcome App
+X-GNOME-FullName=Snigdha OS Welcome App
+Comment=Welcome Application for Snigdha OS Installations
+Exec=/usr/local/bin/snigdhaos-welcome
+Icon=snigdhaos-icon
+Terminal=false
+Type=Application
+Categories=GTK;Settings;Security;X-GNOME-Settings-Panel;X-GNOME-SystemSettings;X-Unity-Settings-Panel;X-XFCE-SettingsDialog;X-XFCE-SystemSettings;
+Keywords=welcome;tool;
+StartupNotify=true
