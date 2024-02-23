@@ -66,8 +66,8 @@ label#label_style_eshan {
     padding: 10px 10px 10px 10px;
     border-radius: 0px;
     font-size: 16px;
-    font-weight: bold;
-    color: #2B65EC;
+    font-weight: normal;
+    color: #F8C8DC;
 }
 """
 
