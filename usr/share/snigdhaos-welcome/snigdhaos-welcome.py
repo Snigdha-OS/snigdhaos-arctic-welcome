@@ -21,6 +21,7 @@ from gi.repository import Gtk, GdkPixbuf, GLib, Gdk
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 REMOTE_SERVER = "www.google.com"
+
 css = """
 box#stack_box{
     padding: 10px 10px 10px 10px;
