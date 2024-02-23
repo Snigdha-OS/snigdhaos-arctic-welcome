@@ -128,7 +128,6 @@ class Main(Gtk.Window):
     def file_check(self, path):
         if os.path.isfile(path):
             return True
-
         return False
 
     def on_mirror_clicked(self, widget):
@@ -156,13 +155,9 @@ class Main(Gtk.Window):
             )
             if selected_bg_color[0] is True:
                 theme_bg_hex_color = self.convert_to_hex(selected_bg_color[1])
-
                 custom_css = css.replace("@theme_base_color_button", theme_bg_hex_color)
-
                 self.style_provider.load_from_data(custom_css, len(custom_css))
-
             self.button_adv_install.set_name("button_adv_install")
-
             settings_beginner_file = "/etc/calamares/settings-beginner.conf"
             packages_no_sys_update_file = (
                 "/etc/calamares/modules/packages-no-system-update.conf"
@@ -184,9 +179,7 @@ class Main(Gtk.Window):
             ]
 
             threading.Thread(target=self.run_app, args=(app_cmd,), daemon=True).start()
-
             efi_file_check = self.file_check("/sys/firmware/efi/fw_platform_size")
-
             if efi_file_check is True:
                 md = MessageDialogBootloader(
                     title="Choose Bootloader",
@@ -196,7 +189,6 @@ class Main(Gtk.Window):
                     calamares_polkit=self.calamares_polkit,
                 )
                 md.show_all()
-
             else:
                 subprocess.Popen([self.calamares_polkit, "-d"], shell=False)
         else:
