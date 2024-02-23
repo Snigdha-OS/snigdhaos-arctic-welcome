@@ -647,35 +647,7 @@ class Main(Gtk.Window):
     def mirror_update(self):
         GLib.idle_add(
             self.label_notify.set_markup,
-            f"<span foreground='cyan'>Updating Arch Mirrorlist\n"
-            f"This may take some time, please wait...</span>",
-        )  # noqa
-        GLib.idle_add(self.button_mirrors.set_sensitive, False)
-        subprocess.run(
-            [
-                "pkexec",
-                "/usr/bin/reflector",
-                "--age",
-                "6",
-                "--latest",
-                "21",
-                "--fastest",
-                "21",
-                "--threads",
-                "21",
-                "--sort",
-                "rate",
-                "--protocol",
-                "https",
-                "--save",
-                "/etc/pacman.d/mirrorlist",
-            ],
-            shell=False,
-        )
-        print("Update mirrors completed")
-        GLib.idle_add(
-            self.label_notify.set_markup,
-            f"<span foreground='cyan'>Updating Chaotic Aur Mirrorlist\n"
+            f"<span foreground='#F8C8DC'>Updating Arch Mirrorlist\n"
             f"This may take some time, please wait...</span>",
         )  # noqa
         GLib.idle_add(self.button_mirrors.set_sensitive, False)
@@ -689,12 +661,34 @@ class Main(Gtk.Window):
                 "--allow-root",
                 "--save",
                 "/etc/pacman.d/mirrorlist",
+                "arch",
+            ],
+            shell=False,
+        )
+        print("Update mirrors completed")
+        GLib.idle_add(
+            self.label_notify.set_markup,
+            f"<span foreground='#F8C8DC'>Updating Chaotic Aur Mirrorlist\n"
+            f"This may take some time, please wait...</span>",
+        )  # noqa
+        GLib.idle_add(self.button_mirrors.set_sensitive, False)
+        subprocess.run(
+            [
+                "pkexec",
+                "/usr/bin/rate-mirrors",
+                "--concurrency",
+                "40",
+                "--disable-comments",
+                "--allow-root",
+                "--save",
+                "/etc/pacman.d/chaotic-mirrorlist",
                 "chaotic-aur",
             ],
             shell=False,
         )
         print("Update mirrors completed")
-        GLib.idle_add(self.label_notify.set_markup, "<b>Mirrorlist updated</b>")
+        # GLib.idle_add(self.label_notify.set_markup, "<b>Mirrorlist updated</b>")
+        GLib.idle_add(self.label_notify.set_markup, "<span foreground='#C3D7DB'><b>Mirrorlist Updated </b></span>")
         GLib.idle_add(self.button_mirrors.set_sensitive, True)
 
 
