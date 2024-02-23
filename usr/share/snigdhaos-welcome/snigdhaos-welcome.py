@@ -1,3 +1,6 @@
+# Author: Erik Dubois [Arcolinux]
+# Adopted for Snigdha OS
+
 #!/usr/bin/env python3
 
 import gi
@@ -70,10 +73,10 @@ label#label_style_eshan {
 
 class Main(Gtk.Window):
     def __init__(self):
-        super(Main, self).__init__(title="Snigdha OS Welcome - Arctic")
+        super(Main, self).__init__(title="Snigdha OS Welcome - [Arctic]")
         self.set_border_width(10)
         self.set_default_size(860, 450)
-        self.set_icon_from_file(os.path.join(base_dir, "images/snigdhaos-icon.png"))
+        self.set_icon_from_file(os.path.join(base_dir, "images/snigdhaos-welcome.png"))
         self.set_position(Gtk.WindowPosition.CENTER)
         self.results = ""
 

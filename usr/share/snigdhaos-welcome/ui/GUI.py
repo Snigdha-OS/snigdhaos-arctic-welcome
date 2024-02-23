@@ -49,7 +49,7 @@ def GUI(self, Gtk, GdkPixbuf):
             headerbar.pack_start(
                 Gtk.Image().new_from_pixbuf(
                     GdkPixbuf.Pixbuf().new_from_file_at_size(
-                        os.path.join(base_dir, "images/snigdhaos-icon.png"), 16, 16
+                        os.path.join(base_dir, "images/snigdhaos-welcome.png"), 16, 16
                     )
                 )
             )
@@ -421,7 +421,7 @@ def GUI(self, Gtk, GdkPixbuf):
     # ======================================================================
 
     pixbuf = GdkPixbuf.Pixbuf().new_from_file_at_size(
-        os.path.join(base_dir, "images/snigdhaos-icon.png"), 164, 164
+        os.path.join(base_dir, "images/snigdhaos-welcome.png"), 300, 300
     )
     image = Gtk.Image().new_from_pixbuf(pixbuf)
 
