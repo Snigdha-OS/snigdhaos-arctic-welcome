@@ -2,10 +2,10 @@
 
 # Set the repository URL and branch
 REPO_URL="https://github.com/Snigdha-OS/snigdhaos-welcome.git"
-BRANCH="main"  # or "master" depending on your repository's default branch
+BRANCH="master"  # or "main" depending on your repository's default branch
 
 # Commit message
-MESSAGE="@eshanized: push via script"
+MESSAGE="⏳ @eshanized updated the repository!!!"
 
 # Add all files, commit, and push changes
 git add .
