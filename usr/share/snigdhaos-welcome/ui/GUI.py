@@ -23,7 +23,7 @@ app_twitter = "https://twitter.com/snigdhaos/"
 if debug:
     user = username
 else:
-    user = "eshan"
+    user = "whoami"
 
 Settings = home + "/.config/snigdhaos-welcome/settings.conf"
 Skel_Settings = "/etc/skel/.config/snigdhaos-welcome/settings.conf"

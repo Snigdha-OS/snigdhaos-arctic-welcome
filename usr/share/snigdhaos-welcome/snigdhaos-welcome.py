@@ -1,7 +1,5 @@
-# Author : ArcoLinux & Team
-# Adopted for Snigdha OS Installation
-
 #!/usr/bin/env python3
+
 import gi
 import os
 import conflicts
@@ -67,7 +65,7 @@ label#label_style_eshan {
 
 class Main(Gtk.Window):
     def __init__(self):
-        super(Main, self).__init__(title="Snigdha OS Welcome - Arctic")
+        super(Main, self).__init__(title="Snigdha OS Welcome")
         self.set_border_width(10)
         self.set_default_size(860, 450)
         self.set_icon_from_file(os.path.join(base_dir, "images/snigdhaos-welcome-small.png"))
