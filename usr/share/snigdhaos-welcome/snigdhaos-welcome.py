@@ -59,7 +59,7 @@ label#label_style_eshan {
     border-radius: 0px;
     font-size: 16px;
     font-weight: bold;
-    color: #F8C8DC;
+    color: #2af598;
 }
 """
 
@@ -604,16 +604,16 @@ class Main(Gtk.Window):
         GLib.idle_add(self.button_mirrors.set_sensitive, False)
         subprocess.run(
             [
-                "pkexec",
-                "/usr/bin/rate-mirrors",
-                "--concurrency",
-                "40",
-                "--disable-comments",
-                "--allow-root",
-                "--save",
-                "/etc/pacman.d/mirrorlist",
-                "arch",
-            ],
+                    "pkexec",
+                    "rate-mirrors",
+                    "--concurrency",
+                    "40",
+                    "--disable-comments",
+                    "--allow-root",
+                    "--save",
+                    "/etc/pacman.d/mirrorlist",
+                    "arch",
+                ],
             shell=False,
         )
         print("Update mirrors completed")

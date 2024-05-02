@@ -189,7 +189,7 @@ def GUI(self, Gtk, GdkPixbuf):
     mew_event.connect(
         "button_press_event",
         self.on_social_clicked,
-        "https://github.com/snigdhalinux",
+        "https://github.com/Snigdha-OS",
     )
 
     label_social_padding = Gtk.Label(xalign=0, yalign=0)
