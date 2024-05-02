@@ -354,7 +354,7 @@ def GUI(self, Gtk, GdkPixbuf):
             hbox_install_buttons.pack_start(button_resolution, False, True, 0)
 
     label_creds = Gtk.Label(xalign=0)
-    label_creds.set_markup("User: liveuser | Pass: No Password")
+    label_creds.set_markup("User: whoami | Pass: No Password")
     label_creds.set_name("label_style")
 
     hbox_user = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
