@@ -1,3 +1,41 @@
 #!/bin/bash
 
-python3 /usr/share/snigdhaos-welcome/snigdhaos-welcome.py
+# Author        : Eshan Roy <m.eshanized@gmail.com>
+# Author URL    : https://eshanized.github.io
+
+# Check if Python 3 is installed
+if ! command -v python3 &>/dev/null; then
+  echo "Python 3 is not installed. Installing Python 3 using pacman..."
+
+  # Install Python 3 using pacman
+  sudo pacman -Syu python --noconfirm
+
+  # Check if the installation was successful
+  if ! command -v python3 &>/dev/null; then
+    echo "Error: Python 3 installation failed. Please install Python manually."
+    exit 1
+  fi
+else
+  echo "Python 3 is already installed."
+fi
+
+# Define the Python script path
+SCRIPT_PATH="/usr/share/snigdhaos-welcome/snigdhaos-welcome.py"
+
+# Check if the Python script exists
+if [ ! -f "$SCRIPT_PATH" ]; then
+  echo "Error: $SCRIPT_PATH not found."
+  exit 1
+fi
+
+# Run the Python script
+echo "Running Snigdha OS Welcome script..."
+python3 "$SCRIPT_PATH"
+
+# Check if the script ran successfully
+if [ $? -eq 0 ]; then
+  echo "Script ran successfully."
+else
+  echo "Error: Script execution failed."
+  exit 1
+fi
