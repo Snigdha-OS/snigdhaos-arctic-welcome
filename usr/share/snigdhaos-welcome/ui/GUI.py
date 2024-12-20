@@ -17,8 +17,8 @@ username = getpass.getuser()
 app_discord = "#"
 app_website = "https://snigdhaos.org/"
 app_forums = "https://forum.snigdhaos.org/"
-app_facebook = "https://facebook.com/snigdhalinux/"
-app_twitter = "https://twitter.com/snigdhaos/"
+app_facebook = "https://facebook.com/Snigdha-OS/"
+app_twitter = "https://twitter.com/Snigdha-OS/"
 
 if debug:
     user = username
@@ -38,7 +38,7 @@ def GUI(self, Gtk, GdkPixbuf):
     self.add(self.vbox)
 
     headerbar = Gtk.HeaderBar()
-    headerbar.set_title("Snigdha OS Welcome - Arctic")
+    headerbar.set_title("Snigdha OS Welcome - Optimized for Performance and Customization")
     headerbar.set_show_close_button(True)
 
     self.set_titlebar(headerbar)
