@@ -1,14 +1,9 @@
-# =================================================================
-# =          Authors: Brad Heffernan & Erik Dubois                =
-# =================================================================
-
 import gi
 import os
 gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk  # noqa
+from gi.repository import Gtk
 
 base_dir = os.path.dirname(os.path.realpath(__file__))
-
 
 class Conflicts(Gtk.Window):
     def __init__(self):
@@ -19,64 +14,45 @@ class Conflicts(Gtk.Window):
         self.set_icon_from_file(os.path.join(base_dir, 'images/snigdhaos-icon.png'))
         self.set_position(Gtk.WindowPosition.CENTER)
 
+        # Vertical box to hold all UI elements
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        vbox.set_homogeneous(False)  # Optional: Allow different sized widgets
         self.add(vbox)
 
-        # If you want header in middle then remove xalign=0
-        lblh1 = Gtk.Label(xalign=0)
-        lblh1.set_markup("<b><i>Warning 1</i></b>")
+        # List of conflicts and messages
+        warnings = [
+            ("Warning 1", "xcursor-breeze conflicts with breeze"),
+            ("Warning 2", "visual-studio-code-bin conflicts with code"),
+            ("Warning 3", "synapse (zeitgeist) conflicts with catfish"),
+            ("Warning 4", "Either choose libreoffice-fresh or libreoffice-still"),
+            ("Warning 5", "Either choose virtualbox for linux or linux-lts"),
+            ("Warning 6", "midori (zeitgeist) conflicts with catfish")
+        ]
 
-        lblm1 = Gtk.Label()
-        lblm1.set_text("xcursor-breeze conflicts with breeze")
+        # Iterate through warnings to dynamically add them to the UI
+        for title, message in warnings:
+            # Create and style header label with markup
+            header = Gtk.Label(xalign=0)
+            header.set_markup(f"<b><i>{title}</i></b>")
+            vbox.pack_start(header, False, False, 0)
+            
+            # Create message label
+            msg_label = Gtk.Label()
+            msg_label.set_text(message)
+            msg_label.set_xalign(0)  # Align the text to the left
+            vbox.pack_start(msg_label, False, False, 0)
 
-        lblh2 = Gtk.Label(xalign=0)
-        lblh2.set_markup("<b><i>Warning 2</i></b>")
+        # Add a close button at the bottom of the window
+        close_button = Gtk.Button(label="Close")
+        close_button.connect("clicked", self.close)
+        vbox.pack_start(close_button, False, False, 0)
 
-        lblm2 = Gtk.Label()
-        lblm2.set_text("visual-studio-code-bin conflicts with code")
-
-        lblh3 = Gtk.Label(xalign=0)
-        lblh3.set_markup("<b><i>Warning 3</i></b>")
-
-        lblm3 = Gtk.Label()
-        lblm3.set_text("synapse (zeitgeist) conflicts with catfish")
-
-        lblh4 = Gtk.Label(xalign=0)
-        lblh4.set_markup("<b><i>Warning 4</i></b>")
-
-        lblm4 = Gtk.Label()
-        lblm4.set_text("Either choose libreoffice-fresh or libreoffice-still")
-
-        lblh5 = Gtk.Label(xalign=0)
-        lblh5.set_markup("<b><i>Warning 5</i></b>")
-
-        lblm5 = Gtk.Label()
-        lblm5.set_text("Either choose virtualbox for linux or linux-lts")
-
-        lblh6 = Gtk.Label(xalign=0)
-        lblh6.set_markup("<b><i>Warning 6</i></b>")
-
-        lblm6 = Gtk.Label()
-        lblm6.set_text("midori (zeitgeist) conflicts with catfish")
-
-
-        vbox.pack_start(lblh1, False, False, 0)
-        vbox.pack_start(lblm1, False, False, 0)
-
-        vbox.pack_start(lblh2, False, False, 0)
-        vbox.pack_start(lblm2, False, False, 0)
-
-        vbox.pack_start(lblh3, False, False, 0)
-        vbox.pack_start(lblm3, False, False, 0)
-
-        vbox.pack_start(lblh4, False, False, 0)
-        vbox.pack_start(lblm4, False, False, 0)
-
-        vbox.pack_start(lblh5, False, False, 0)
-        vbox.pack_start(lblm5, False, False, 0)
-
-        vbox.pack_start(lblh6, False, False, 0)
-        vbox.pack_start(lblm6, False, False, 0)
-
-    def close(self, widget, event):
+    def close(self, widget, event=None):
+        # Close the window when the close button is clicked
         self.destroy()
+
+# Run the application
+if __name__ == "__main__":
+    window = Conflicts()
+    window.show_all()
+    Gtk.main()
