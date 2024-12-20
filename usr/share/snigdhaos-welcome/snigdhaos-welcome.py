@@ -596,51 +596,82 @@ class Main(Gtk.Window):
             return False
         
     def mirror_update(self):
+    # Function to check if rate-mirrors is installed
+        def is_rate_mirrors_installed():
+            try:
+                # Check if rate-mirrors is available in the system path
+                subprocess.run(["which", "rate-mirrors"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                return True  # If found, return True
+            except subprocess.CalledProcessError:
+                return False  # If not found, return False
+
+        # If rate-mirrors is not installed, install it
+        if not is_rate_mirrors_installed():
+            GLib.idle_add(
+                self.label_notify.set_markup,
+                f"<span foreground='yellow'>rate-mirrors not found. Installing...</span>"
+            )
+            # Install rate-mirrors using pacman
+            try:
+                subprocess.run(["sudo", "pacman", "-S", "--noconfirm", "rate-mirrors"], check=True)
+                print("rate-mirrors installed successfully.")
+            except subprocess.CalledProcessError as e:
+                print(f"Error installing rate-mirrors: {e}")
+                GLib.idle_add(
+                    self.label_notify.set_markup,
+                    f"<span foreground='red'>Error installing rate-mirrors. Please install manually.</span>"
+                )
+                return
+
+        # Begin updating the Arch mirrorlist
         GLib.idle_add(
             self.label_notify.set_markup,
             f"<span foreground='cyan'>Updating Arch Mirrorlist\n"
             f"This may take some time, please wait...</span>",
         )  # noqa
         GLib.idle_add(self.button_mirrors.set_sensitive, False)
+        
+        # Run the mirror update for Arch
         subprocess.run(
             [
-                    "pkexec",
-                    "rate-mirrors",
-                    "--concurrency",
-                    "40",
-                    "--disable-comments",
-                    "--allow-root",
-                    "--save",
-                    "/etc/pacman.d/mirrorlist",
-                    "arch",
-                ],
+                "pkexec",  # Runs the command with elevated privileges
+                "rate-mirrors",
+                "--concurrency", "40",  # Use 40 threads for faster updates
+                "--disable-comments",  # Ignore comments in the mirrorlist
+                "--allow-root",  # Allow root privileges for the operation
+                "--save", "/etc/pacman.d/mirrorlist",  # Save the updated mirrorlist
+                "arch",  # The mirrorlist to update (Arch Linux)
+            ],
             shell=False,
         )
-        print("Update mirrors completed")
+        print("Arch mirrorlist update completed")
+        
+        # Update the notify label for Chaotic AUR mirrorlist
         GLib.idle_add(
             self.label_notify.set_markup,
             f"<span foreground='cyan'>Updating Chaotic Aur Mirrorlist\n"
             f"This may take some time, please wait...</span>",
         )  # noqa
-        GLib.idle_add(self.button_mirrors.set_sensitive, False)
+        
+        # Run the mirror update for Chaotic AUR
         subprocess.run(
             [
-                "pkexec",
-                "/usr/bin/rate-mirrors",
-                "--concurrency",
-                "40",
-                "--disable-comments",
-                "--allow-root",
-                "--save",
-                "/etc/pacman.d/chaotic-mirrorlist",
-                "chaotic-aur",
+                "pkexec",  # Elevated privileges for the operation
+                "/usr/bin/rate-mirrors",  # Full path to rate-mirrors for Chaotic AUR
+                "--concurrency", "40",  # Use 40 threads for faster updates
+                "--disable-comments",  # Ignore comments in the mirrorlist
+                "--allow-root",  # Allow root privileges for the operation
+                "--save", "/etc/pacman.d/chaotic-mirrorlist",  # Save the updated mirrorlist
+                "chaotic-aur",  # The mirrorlist to update (Chaotic AUR)
             ],
             shell=False,
         )
-        print("Update mirrors completed")
+        print("Chaotic AUR mirrorlist update completed")
+        
+        # Finalize the mirror update and enable the button
         GLib.idle_add(self.label_notify.set_markup, "<b>Mirrorlist updated</b>")
         GLib.idle_add(self.button_mirrors.set_sensitive, True)
-
+        
     def MessageBox(self, title, message):
         md = Gtk.MessageDialog(
             parent=self,
