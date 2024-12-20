@@ -29,11 +29,7 @@ class MessageDialog(Gtk.Dialog):
         headerbar.set_title(title)
         headerbar.set_show_close_button(True)
 
-        headerbar.pack_start(
-            Gtk.Image().new_from_pixbuf(
-                GdkPixbuf.Pixbuf().new_from_file_at_size(os.path.join(base_dir, "images/snigdhaos-icon.png"), 24, 24)
-            )
-        )
+        headerbar.pack_start(Gtk.Image().new_from_pixbuf(GdkPixbuf.Pixbuf().new_from_file_at_size(os.path.join(base_dir, "images/snigdhaos-icon.png"), 24, 24)))
 
         self.set_titlebar(headerbar)
 
