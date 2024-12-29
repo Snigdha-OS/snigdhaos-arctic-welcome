@@ -161,39 +161,43 @@ class Main(Gtk.Window):
         return "#{r:02x}{g:02x}{b:02x}".format(r=red, g=green, b=blue)
 
     def on_easy_install_clicked(self, widget):
+        """
+        Handles the "Easy Install" button click. Configures offline installation settings 
+        and launches the appropriate installer based on system state.
+        """
+        # Check if the Pacman lockfile exists
         if not os.path.exists(self.pacman_lockfile):
+            # Update the button's style and label to reflect the enabled state
             widget.set_name("button_easy_install_enabled")
-            widget.get_child().set_markup(
-                "<span size='large'>Offline Installation</span>"
-            )
-            selected_bg_color = widget.get_style_context().lookup_color(
-                "theme_selected_bg_color"
-            )
-            if selected_bg_color[0] is True:
+            widget.get_child().set_markup("<span size='large'>Offline Installation</span>")
+
+            # Retrieve the selected background color from the theme
+            selected_bg_color = widget.get_style_context().lookup_color("theme_selected_bg_color")
+            if selected_bg_color[0]:  # If the color is successfully retrieved
+                # Convert the Gdk.Color to HEX format for custom CSS
                 theme_bg_hex_color = self.convert_to_hex(selected_bg_color[1])
                 custom_css = css.replace("@theme_base_color_button", theme_bg_hex_color)
                 self.style_provider.load_from_data(custom_css, len(custom_css))
+
+            # Set the default style for the "Advanced Install" button
             self.button_adv_install.set_name("button_adv_install")
+
+            # Configuration files for the offline installation
             settings_beginner_file = "/etc/calamares/settings-beginner.conf"
-            packages_no_sys_update_file = (
-                "/etc/calamares/modules/packages-no-system-update.conf"
-            )
-            app_cmd = [
-                "sudo",
-                "cp",
-                settings_beginner_file,
-                "/etc/calamares/settings.conf",
-            ]
+            packages_no_sys_update_file = "/etc/calamares/modules/packages-no-system-update.conf"
+
+            # Copy configuration file for beginner mode
+            app_cmd = ["sudo", "cp", settings_beginner_file, "/etc/calamares/settings.conf"]
             threading.Thread(target=self.run_app, args=(app_cmd,), daemon=True).start()
-            app_cmd = [
-                "sudo",
-                "cp",
-                packages_no_sys_update_file,
-                "/etc/calamares/modules/packages.conf",
-            ]
+
+            # Copy the packages configuration for offline mode
+            app_cmd = ["sudo", "cp", packages_no_sys_update_file, "/etc/calamares/modules/packages.conf"]
             threading.Thread(target=self.run_app, args=(app_cmd,), daemon=True).start()
+
+            # Check for EFI bootloader support
             efi_file_check = self.file_check("/sys/firmware/efi/fw_platform_size")
-            if efi_file_check is True:
+            if efi_file_check:
+                # If EFI is supported, display the bootloader selection dialog
                 md = MessageDialogBootloader(
                     title="Choose Bootloader",
                     install_method="Offline Installation",
@@ -203,23 +207,24 @@ class Main(Gtk.Window):
                 )
                 md.show_all()
             else:
+                # Launch the Calamares installer directly if not an EFI system
                 subprocess.Popen([self.calamares_polkit, "-d"], shell=False)
         else:
-            print(
-                "[ERROR]: Pacman lockfile found %s, is another pacman process running ?"
-                % self.pacman_lockfile
-            )
+            # Handle the case where a Pacman lockfile exists
+            print(f"[ERROR]: Pacman lockfile found {self.pacman_lockfile}, is another pacman process running?")
+            
+            # Display a warning dialog about the lockfile
             md = Gtk.MessageDialog(
                 parent=self,
                 flags=0,
                 message_type=Gtk.MessageType.WARNING,
                 buttons=Gtk.ButtonsType.OK,
-                text="Pacman lockfile found %s, is another pacman process running ?"
-                % self.pacman_lockfile,
+                text=f"Pacman lockfile found {self.pacman_lockfile}, is another pacman process running?",
                 title="Warning",
             )
             md.run()
             md.destroy()
+
 
     def on_adv_install_clicked(self, widget):
         if not os.path.exists(self.pacman_lockfile):
