@@ -47,7 +47,7 @@ label#label_style {
     border-radius: 0px;
     font-size: 16px;
     font-weight: bold;
-    color: pink;
+    color: #6495ed;
 }
 label#label_style_eshan {
     background-color: @theme_base_color;
@@ -65,58 +65,58 @@ label#label_style_eshan {
 
 class Main(Gtk.Window):
     def __init__(self):
-    super(Main, self).__init__(title="Snigdha OS Welcome")
-    
-    # Basic Window Configuration
-    self.set_border_width(10)  # Set the border width of the window
-    self.set_default_size(860, 450)  # Set the default size of the window
-    self.set_icon_from_file(os.path.join(base_dir, "images/snigdhaos-welcome-small.png"))  # Set the window icon
-    self.set_position(Gtk.WindowPosition.CENTER)  # Center the window on the screen
-    self.results = ""  # Initialize results to an empty string
+        super(Main, self).__init__(title="Snigdha OS Welcome")
+        
+        # Basic Window Configuration
+        self.set_border_width(10)  # Set the border width of the window
+        self.set_default_size(860, 450)  # Set the default size of the window
+        self.set_icon_from_file(os.path.join(base_dir, "images/snigdhaos-welcome-small.png"))  # Set the window icon
+        self.set_position(Gtk.WindowPosition.CENTER)  # Center the window on the screen
+        self.results = ""  # Initialize results to an empty string
 
-    # Initialize Configuration Directory and Settings
-    config_dir = os.path.join(GUI.home, ".config/snigdhaos-welcome/")  # Define the configuration directory path
-    if not os.path.exists(config_dir):  # Check if the directory exists
+        # Initialize Configuration Directory and Settings
+        config_dir = os.path.join(GUI.home, ".config/snigdhaos-welcome/")  # Define the configuration directory path
+        if not os.path.exists(config_dir):  # Check if the directory exists
+            try:
+                os.makedirs(config_dir, exist_ok=True)  # Create the directory if it doesn't exist
+                with open(GUI.Settings, "w") as f:  # Open the settings file in write mode
+                    f.write("autostart=True")  # Write default settings
+            except OSError as e:
+                print(f"Error initializing configuration: {e}")  # Handle any file/directory creation errors
+
+        # CSS Styling
+        self.style_provider = Gtk.CssProvider()  # Create a CSS provider
         try:
-            os.makedirs(config_dir, exist_ok=True)  # Create the directory if it doesn't exist
-            with open(GUI.Settings, "w") as f:  # Open the settings file in write mode
-                f.write("autostart=True")  # Write default settings
-        except OSError as e:
-            print(f"Error initializing configuration: {e}")  # Handle any file/directory creation errors
+            # Load the CSS data into the style provider
+            self.style_provider.load_from_data(css, len(css))
+            # Apply the style provider to the default screen
+            Gtk.StyleContext.add_provider_for_screen(
+                Gdk.Screen.get_default(),
+                self.style_provider,
+                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,  # Set priority for application-specific styles
+            )
+        except GLib.Error as e:
+            print(f"Error loading CSS: {e}")  # Handle CSS loading errors
 
-    # CSS Styling
-    self.style_provider = Gtk.CssProvider()  # Create a CSS provider
-    try:
-        # Load the CSS data into the style provider
-        self.style_provider.load_from_data(css, len(css))
-        # Apply the style provider to the default screen
-        Gtk.StyleContext.add_provider_for_screen(
-            Gdk.Screen.get_default(),
-            self.style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,  # Set priority for application-specific styles
-        )
-    except GLib.Error as e:
-        print(f"Error loading CSS: {e}")  # Handle CSS loading errors
+        # Initialize Internal Attributes
+        self.pkg_queue = Queue()  # Initialize a queue for package operations
+        self.pacman_lockfile = "/var/lib/pacman/db.lck"  # Define the lockfile path for pacman
+        self.sudo_username = os.getlogin()  # Get the username of the user running the script
+        self.calamares_polkit = "/usr/bin/calamares_polkit"  # Path to the Calamares Polkit executable
+        self.session = None  # Initialize session attribute
 
-    # Initialize Internal Attributes
-    self.pkg_queue = Queue()  # Initialize a queue for package operations
-    self.pacman_lockfile = "/var/lib/pacman/db.lck"  # Define the lockfile path for pacman
-    self.sudo_username = os.getlogin()  # Get the username of the user running the script
-    self.calamares_polkit = "/usr/bin/calamares_polkit"  # Path to the Calamares Polkit executable
-    self.session = None  # Initialize session attribute
+        # Retrieve Session Information
+        self.get_session()  # Fetch the session information (implementation not shown here)
 
-    # Retrieve Session Information
-    self.get_session()  # Fetch the session information (implementation not shown here)
+        # Initialize GUI
+        GUI.GUI(self, Gtk, GdkPixbuf)  # Initialize the graphical user interface components
 
-    # Initialize GUI
-    GUI.GUI(self, Gtk, GdkPixbuf)  # Initialize the graphical user interface components
-
-    # Start Internet Notifier Thread if the user matches the GUI user
-    if GUI.username == GUI.user:  # Check if the username matches
-        internet_notifier_thread = threading.Thread(
-            target=self.internet_notifier, daemon=True  # Create a thread for the internet notifier
-        )
-        internet_notifier_thread.start()  # Start the thread
+        # Start Internet Notifier Thread if the user matches the GUI user
+        if GUI.username == GUI.user:  # Check if the username matches
+            internet_notifier_thread = threading.Thread(
+                target=self.internet_notifier, daemon=True  # Create a thread for the internet notifier
+            )
+            internet_notifier_thread.start()  # Start the thread
 
     def get_session(self):
         try:
