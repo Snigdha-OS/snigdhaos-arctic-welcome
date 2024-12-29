@@ -12,8 +12,7 @@ from queue import Queue
 import ui.GUI as GUI
 from ui.MessageDialog import MessageDialogBootloader
 gi.require_version("Gtk", "3.0")
-gi.require_version("Wnck", "3.0")
-from gi.repository import Gtk, GdkPixbuf, GLib, Gdk, Wnck 
+from gi.repository import Gtk, GdkPixbuf, GLib, Gdk 
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 REMOTE_SERVER = "www.google.com"
@@ -372,17 +371,28 @@ class Main(Gtk.Window):
 
 
     def on_buttonarandr_clicked(self, widget):
+        """
+        Handles the "Arandr" button click. Checks if Arandr is installed and installs it if needed,
+        then launches the application.
+        """
+        # Command to launch Arandr
         app_cmd = ["/usr/bin/arandr"]
+
+        # Command to install Arandr using pacman
         pacman_cmd = [
-            "pkexec",
-            "pacman",
-            "-Sy",
-            "arandr",
-            "--noconfirm",
-            "--needed",
+            "pkexec",         # Elevate privileges
+            "pacman",         # Package manager command
+            "-Sy",            # Synchronize package databases
+            "arandr",         # Install the Arandr package
+            "--noconfirm",    # Skip confirmation prompts
+            "--needed",       # Install only if not already installed
         ]
+
+        # Check if Arandr is installed
         if not self.check_package_installed("arandr"):
+            # If not installed, check for the pacman lockfile
             if not os.path.exists(self.pacman_lockfile):
+                # Display a warning dialog to inform the user
                 md = Gtk.MessageDialog(
                     parent=self,
                     flags=0,
@@ -391,56 +401,72 @@ class Main(Gtk.Window):
                     text="%s was not found\n" % "arandr",
                     title="Warning",
                 )
+                # Add "Yes" and "No" buttons for user interaction
                 md.add_buttons("Yes", 1)
                 md.add_buttons("No", 0)
-                md.format_secondary_markup("Let Snigdha OS - Welcome install it ?")
+                md.format_secondary_markup("Let Snigdha OS - Welcome install it?")
+                
+                # Capture user response
                 response = md.run()
                 md.destroy()
-                if response == 1:
+
+                if response == 1:  # User agrees to install Arandr
+                    # Start the package queue checker in a separate thread
                     threading.Thread(
                         target=self.check_package_queue, daemon=True
                     ).start()
+
+                    # Start the package installation in a separate thread
                     threading.Thread(
                         target=self.install_package,
                         args=(
-                            app_cmd,
-                            pacman_cmd,
-                            "arandr",
+                            app_cmd,      # Command to launch Arandr after installation
+                            pacman_cmd,   # Command to install Arandr
+                            "arandr",     # Package name
                         ),
                         daemon=True,
                     ).start()
             else:
+                # If the pacman lockfile exists, display an error message
                 print(
-                    "[ERROR]: Pacman lockfile found %s, is another pacman process running ?"
+                    "[ERROR]: Pacman lockfile found %s, is another pacman process running?"
                     % self.pacman_lockfile
                 )
+                # Show a warning dialog to notify the user
                 md = Gtk.MessageDialog(
                     parent=self,
                     flags=0,
                     message_type=Gtk.MessageType.WARNING,
                     buttons=Gtk.ButtonsType.OK,
-                    text="Pacman lockfile found %s, is another pacman process running ?"
+                    text="Pacman lockfile found %s, is another pacman process running?"
                     % self.pacman_lockfile,
                     title="Warning",
                 )
                 md.run()
                 md.destroy()
         else:
+            # If Arandr is already installed, launch it in a separate thread
             threading.Thread(target=self.run_app, args=(app_cmd,), daemon=True).start()
+
     def remove_dev_package(self, pacman_cmd, package):
+        """
+        Removes a specified development package using a given pacman command.
+
+        Args:
+            pacman_cmd (list): Command to run pacman for removing the package.
+            package (str): Name of the package to be removed.
+        """
         try:
+            # Notify the user that package removal has started
             self.label_notify.set_name("label_style")
-            GLib.idle_add(
-                self.label_notify.show,
-            )
+            GLib.idle_add(self.label_notify.show)
             GLib.idle_add(
                 self.label_notify.set_markup,
-                "<span foreground='orange'><b>Removing dev package %s</b></span>"
-                % package,
+                "<span foreground='orange'><b>Removing dev package %s</b></span>" % package,
             )
-            GLib.idle_add(
-                self.label_notify.hide,
-            )
+            GLib.idle_add(self.label_notify.hide)
+
+            # Execute the pacman command as a subprocess
             with subprocess.Popen(
                 pacman_cmd,
                 stdout=subprocess.PIPE,
@@ -449,48 +475,44 @@ class Main(Gtk.Window):
                 universal_newlines=True,
             ) as process:
                 while True:
+                    # Check if the process has finished
                     if process.poll() is not None:
                         break
 
+                    # Output each line of the subprocess's stdout
                     for line in process.stdout:
                         print(line.strip())
 
-                if not self.check_package_installed(package):
-                    print("[INFO]: Pacman %s uninstall completed" % package)
-                    GLib.idle_add(
-                        self.label_notify.show,
-                    )
-                    self.label_notify.set_name("label_style")
-                    GLib.idle_add(
-                        self.label_notify.set_markup,
-                        "<span foreground='orange'><b>Dev package %s removed</b></span>"
-                        % package,
-                    )
-                    GLib.idle_add(
-                        self.label_notify.hide,
-                    )
-                else:
-                    print("[ERROR]: Pacman %s uninstall failed" % package)
-                    self.label_notify.set_name("label_style")
-                    GLib.idle_add(
-                        self.label_notify.show,
-                    )
-                    GLib.idle_add(
-                        self.label_notify.set_markup,
-                        "<span foreground='red'><b>Failed to remove dev package %s</b></span>"
-                        % package,
-                    )
+            # Check if the package was successfully uninstalled
+            if not self.check_package_installed(package):
+                print("[INFO]: Pacman %s uninstall completed" % package)
+                # Notify the user of successful removal
+                GLib.idle_add(self.label_notify.show)
+                self.label_notify.set_name("label_style")
+                GLib.idle_add(
+                    self.label_notify.set_markup,
+                    "<span foreground='orange'><b>Dev package %s removed</b></span>" % package,
+                )
+                GLib.idle_add(self.label_notify.hide)
+            else:
+                # Notify the user of a failure to uninstall
+                print("[ERROR]: Pacman %s uninstall failed" % package)
+                self.label_notify.set_name("label_style")
+                GLib.idle_add(self.label_notify.show)
+                GLib.idle_add(
+                    self.label_notify.set_markup,
+                    "<span foreground='red'><b>Failed to remove dev package %s</b></span>" % package,
+                )
         except Exception as e:
+            # Handle exceptions and notify the user
             print("[ERROR]: Exception in remove_dev_package(): %s" % e)
             self.label_notify.set_name("label_style")
-            GLib.idle_add(
-                self.label_notify.show,
-            )
+            GLib.idle_add(self.label_notify.show)
             GLib.idle_add(
                 self.label_notify.set_markup,
-                "<span foreground='red'><b>Failed to remove dev package %s</b></span>"
-                % package,
+                "<span foreground='red'><b>Failed to remove dev package %s</b></span>" % package,
             )
+
     def install_package(self, app_cmd, pacman_cmd, package):
         try:
             self.label_notify.set_name("label_style")
