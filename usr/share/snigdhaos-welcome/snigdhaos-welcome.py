@@ -119,10 +119,20 @@ class Main(Gtk.Window):
             internet_notifier_thread.start()  # Start the thread
 
     def get_session(self):
+        """
+        Retrieve the session type (e.g., X11, Wayland, etc.) from environment variables.
+        """
         try:
+            # Attempt to get the session type from the environment variable
             self.session = os.environ.get("XDG_SESSION_TYPE")
+            
+            if not self.session:
+                # Log a warning if the session type is not found
+                print("Warning: 'XDG_SESSION_TYPE' is not set in the environment.")
         except Exception as e:
-            print("Exception in get_session(): %s" % e)
+            # Log the exception with details for debugging
+            print(f"Error retrieving session type in get_session(): {e}")
+            self.session = None  # Ensure session is set to None on failure
 
     def on_settings_clicked(self, widget):
         self.toggle_popover()
