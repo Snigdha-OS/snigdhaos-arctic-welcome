@@ -12,7 +12,8 @@ from queue import Queue
 import ui.GUI as GUI
 from ui.MessageDialog import MessageDialogBootloader
 gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, GdkPixbuf, GLib, Gdk 
+gi.require_version("Wnck", "3.0")
+from gi.repository import Gtk, GdkPixbuf, GLib, Gdk, Wnck 
 
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
 REMOTE_SERVER = "www.google.com"
@@ -292,17 +293,28 @@ class Main(Gtk.Window):
             md.destroy()
 
     def on_gp_clicked(self, widget):
+        """
+        Handles the "GParted" button click. Checks if GParted is installed and, if not,
+        prompts the user to install it. If installed, launches GParted.
+        """
+        # Command to launch GParted
         app_cmd = ["/usr/bin/gparted"]
+
+        # Command to install GParted using pacman
         pacman_cmd = [
             "pkexec",
             "pacman",
-            "-Sy",
-            "gparted",
-            "--noconfirm",
-            "--needed",
+            "-Sy",           # Synchronize package databases
+            "gparted",       # Install the GParted package
+            "--noconfirm",   # Skip confirmation prompts
+            "--needed",      # Only install if not already installed
         ]
+
+        # Check if GParted is installed
         if not self.check_package_installed("gparted"):
+            # Check if the Pacman lockfile exists
             if not os.path.exists(self.pacman_lockfile):
+                # Display a warning dialog to inform the user that GParted is not installed
                 md = Gtk.MessageDialog(
                     parent=self,
                     flags=0,
@@ -311,42 +323,53 @@ class Main(Gtk.Window):
                     text="%s was not found" % "gparted",
                     title="Warning",
                 )
+                # Add "Yes" and "No" buttons for user response
                 md.add_buttons("Yes", 1)
                 md.add_buttons("No", 0)
-                md.format_secondary_markup("Let Snigdha OS - Welcome install it ?")
+                md.format_secondary_markup("Let Snigdha OS - Welcome install it?")
+                
+                # Capture the user's response
                 response = md.run()
                 md.destroy()
-                if response == 1:
+
+                if response == 1:  # User chooses "Yes" to install
+                    # Start the package queue checker in a separate thread
                     threading.Thread(
                         target=self.check_package_queue, daemon=True
                     ).start()
+
+                    # Start the package installation process in a separate thread
                     threading.Thread(
                         target=self.install_package,
                         args=(
-                            app_cmd,
-                            pacman_cmd,
-                            "gparted",
+                            app_cmd,      # Command to launch GParted after installation
+                            pacman_cmd,   # Command to install GParted
+                            "gparted",    # Package name
                         ),
                         daemon=True,
                     ).start()
             else:
+                # Handle the case where a Pacman lockfile exists
                 print(
-                    "[ERROR]: Pacman lockfile found %s, is another pacman process running ?"
+                    "[ERROR]: Pacman lockfile found %s, is another pacman process running?"
                     % self.pacman_lockfile
                 )
+                # Display a warning dialog about the lockfile
                 md = Gtk.MessageDialog(
                     parent=self,
                     flags=0,
                     message_type=Gtk.MessageType.WARNING,
                     buttons=Gtk.ButtonsType.OK,
-                    text="Pacman lockfile found %s, is another pacman process running ?"
+                    text="Pacman lockfile found %s, is another pacman process running?"
                     % self.pacman_lockfile,
                     title="Warning",
                 )
                 md.run()
                 md.destroy()
         else:
+            # If GParted is already installed, launch it in a separate thread
             threading.Thread(target=self.run_app, args=(app_cmd,), daemon=True).start()
+
 
     def on_buttonarandr_clicked(self, widget):
         app_cmd = ["/usr/bin/arandr"]
