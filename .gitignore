@@ -1,1 +1,12 @@
-__pycache__
+# Byte-compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+env/
+
+# pipenv
+Pipfile
+Pipfile.lock
