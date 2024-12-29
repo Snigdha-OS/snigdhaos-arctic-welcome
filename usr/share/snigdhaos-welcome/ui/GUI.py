@@ -150,7 +150,7 @@ def GUI(self, Gtk, GdkPixbuf):
     fb_event.connect(
         "button_press_event",
         self.on_social_clicked,
-        "https://www.facebook.com/snigdhalinux/",
+        "https://www.facebook.com/Snigdha-OS/",
     )
 
     # telegram
