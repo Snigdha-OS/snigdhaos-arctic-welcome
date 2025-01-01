@@ -628,13 +628,25 @@ class Main(Gtk.Window):
             return None
 
     def startup_toggle(self, widget):
-        if widget.get_active() is True:
-            if os.path.isfile(GUI.dot_desktop):
-                shutil.copy(GUI.dot_desktop, GUI.autostart)
-        else:
-            if os.path.isfile(GUI.autostart):
-                os.unlink(GUI.autostart)
-        self.save_settings(widget.get_active())
+        try:
+            # Check if the toggle button is active
+            if widget.get_active():
+                # If active, copy the .desktop file to autostart location
+                if os.path.isfile(GUI.dot_desktop):
+                    shutil.copy(GUI.dot_desktop, GUI.autostart)
+                    print(f"[INFO]: {GUI.dot_desktop} copied to {GUI.autostart}")
+            else:
+                # If inactive, remove the autostart file if it exists
+                if os.path.isfile(GUI.autostart):
+                    os.unlink(GUI.autostart)
+                    print(f"[INFO]: {GUI.autostart} removed")
+            
+            # Save the settings based on the widget state (active or not)
+            self.save_settings(widget.get_active())
+
+        except Exception as e:
+            # Log any errors that occur during the operation
+            print(f"[ERROR]: Error in startup_toggle: {e}")
 
     def save_settings(self, state):
         with open(GUI.Settings, "w") as f:
