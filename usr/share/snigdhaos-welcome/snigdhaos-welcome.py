@@ -649,9 +649,14 @@ class Main(Gtk.Window):
             print(f"[ERROR]: Error in startup_toggle: {e}")
 
     def save_settings(self, state):
-        with open(GUI.Settings, "w") as f:
-            f.write("autostart=" + str(state))
-            f.close()
+        try:
+            # Open the settings file in write mode and save the state (autostart)
+            with open(GUI.Settings, "w") as f:
+                f.write(f"autostart={state}")
+            print(f"[INFO]: Settings saved: autostart={state}")
+        except Exception as e:
+            # Handle any errors that occur while saving settings
+            print(f"[ERROR]: Failed to save settings: {e}")
 
     def load_settings(self):
         line = "True"
