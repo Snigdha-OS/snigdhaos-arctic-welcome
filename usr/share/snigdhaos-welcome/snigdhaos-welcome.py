@@ -3,7 +3,7 @@
 # Import necessary modules and libraries
 import gi
 import os
-import conflicts  # Presumably a custom module
+import conflicts
 import subprocess
 import threading
 import shutil
@@ -15,7 +15,6 @@ from ui.MessageDialog import MessageDialogBootloader  # Import MessageDialogBoot
 
 # Ensure the required version of Gtk is available
 gi.require_version("Gtk", "3.0")
-
 # Import Gtk and related classes from the gi.repository for GTK GUI application development
 from gi.repository import Gtk, GdkPixbuf, GLib, Gdk
 
