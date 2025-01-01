@@ -598,16 +598,34 @@ class Main(Gtk.Window):
 
 
     def run_app(self, app_cmd):
-        process = subprocess.run(
-            app_cmd,
-            shell=False,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT,
-            universal_newlines=True,
-        )
-        # for debugging print stdout to console
-        if GUI.debug is True:
-            print(process.stdout)
+        try:
+            # Run the application command with subprocess.run() and capture stdout and stderr
+            process = subprocess.run(
+                app_cmd,
+                shell=False,  # Avoid shell injection
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,  # Capture stderr separately
+                universal_newlines=True,  # Ensure output is decoded as text
+                check=True  # Raise CalledProcessError if command returns non-zero exit code
+            )
+
+            # Debugging: Print stdout to console if debugging is enabled
+            if GUI.debug:
+                print(process.stdout)
+
+            return process.stdout  # Return the output
+
+        except subprocess.CalledProcessError as e:
+            # Handle errors in case the command fails (non-zero exit code)
+            if GUI.debug:
+                print(f"Error executing command: {e}")
+            return None  # Return None on failure
+
+        except Exception as e:
+            # Catch any other exceptions
+            if GUI.debug:
+                print(f"Unexpected error: {e}")
+            return None
 
     def startup_toggle(self, widget):
         if widget.get_active() is True:
