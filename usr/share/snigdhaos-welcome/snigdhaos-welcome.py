@@ -1,20 +1,28 @@
 #!/usr/bin/env python3
 
+# Import necessary modules and libraries
 import gi
 import os
-import conflicts
+import conflicts  # Presumably a custom module
 import subprocess
 import threading
 import shutil
 import socket
 from time import sleep
 from queue import Queue
-import ui.GUI as GUI
-from ui.MessageDialog import MessageDialogBootloader
-gi.require_version("Gtk", "3.0")
-from gi.repository import Gtk, GdkPixbuf, GLib, Gdk 
+import ui.GUI as GUI  # Import GUI module from the ui package
+from ui.MessageDialog import MessageDialogBootloader  # Import MessageDialogBootloader class from ui.MessageDialog
 
+# Ensure the required version of Gtk is available
+gi.require_version("Gtk", "3.0")
+
+# Import Gtk and related classes from the gi.repository for GTK GUI application development
+from gi.repository import Gtk, GdkPixbuf, GLib, Gdk
+
+# Define base directory path by getting the absolute path of the current file's directory
 base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__)))
+
+# Define a constant REMOTE_SERVER with the address of the server (Google) to be used later for network operations
 REMOTE_SERVER = "www.google.com"
 
 css = """
@@ -515,11 +523,16 @@ class Main(Gtk.Window):
 
     def install_package(self, app_cmd, pacman_cmd, package):
         try:
+            # Set the label style for notifications
             self.label_notify.set_name("label_style")
+            
+            # Update the notification label to show the package being installed
             GLib.idle_add(
                 self.label_notify.set_markup,
                 "<span foreground='cyan'><b>Installing %s</b></span>" % package,
             )
+            
+            # Run the pacman command to install the package
             with subprocess.Popen(
                 pacman_cmd,
                 stdout=subprocess.PIPE,
@@ -528,49 +541,62 @@ class Main(Gtk.Window):
                 universal_newlines=True,
             ) as process:
                 while True:
+                    # Check if the process has finished
                     if process.poll() is not None:
                         break
+                    # Read each line of output from the process
                     for line in process.stdout:
-                        print(line.strip())
-                if self.check_package_installed(package):
-                    self.pkg_queue.put((0, app_cmd, package))
-                    print("[INFO]: Pacman package install completed")
-                    self.label_notify.set_name("label_style")
-                    GLib.idle_add(
-                        self.label_notify.show,
-                    )
-                    GLib.idle_add(
-                        self.label_notify.set_markup,
-                        "<span foreground='purple'><b>Package %s installed</b></span>"
-                        % package,
-                    )
-                    GLib.idle_add(
-                        self.label_notify.hide,
-                    )
-                else:
-                    self.pkg_queue.put((1, app_cmd, package))
-                    print("[ERROR]: Pacman package install failed")
-                    self.label_notify.set_name("label_style")
-                    GLib.idle_add(
-                        self.label_notify.show,
-                    )
-                    GLib.idle_add(
-                        self.label_notify.set_markup,
-                        "<span foreground='orange'><b>Package %s install failed</b></span>"
-                        % package,
-                    )
-        except Exception as e:
-            print("[ERROR]: Exception in install_package(): %s" % e)
+                        print(line.strip())  # Optionally print the output for debugging purposes
+
+            # Check if the package was successfully installed
+            if self.check_package_installed(package):
+                # Notify success: Add the installation task to the queue
+                self.pkg_queue.put((0, app_cmd, package))
+                print("[INFO]: Pacman package install completed")
+                
+                # Update the notification label to show package installation success
+                self.label_notify.set_name("label_style")
+                GLib.idle_add(self.label_notify.show)
+                GLib.idle_add(
+                    self.label_notify.set_markup,
+                    "<span foreground='purple'><b>Package %s installed</b></span>" % package,
+                )
+                GLib.idle_add(self.label_notify.hide)  # Hide the notification after a short time
+            else:
+                # Notify failure: Add the installation failure task to the queue
+                self.pkg_queue.put((1, app_cmd, package))
+                print("[ERROR]: Pacman package install failed")
+                
+                # Update the notification label to show installation failure
+                self.label_notify.set_name("label_style")
+                GLib.idle_add(self.label_notify.show)
+                GLib.idle_add(
+                    self.label_notify.set_markup,
+                    "<span foreground='orange'><b>Package %s install failed</b></span>" % package,
+                )
+                GLib.idle_add(self.label_notify.hide)  # Hide the notification after a short time
+        except subprocess.CalledProcessError as e:
+            # Catch specific error for subprocess-related issues and notify the user
+            print(f"[ERROR]: Subprocess failed during package installation: {e}")
             self.label_notify.set_name("label_style")
-            GLib.idle_add(
-                self.label_notify.show,
-            )
+            GLib.idle_add(self.label_notify.show)
             GLib.idle_add(
                 self.label_notify.set_markup,
-                "<span foreground='red'><b>Package install failed</b></span>",
+                "<span foreground='red'><b>Package install failed (subprocess error)</b></span>",
+            )
+        except Exception as e:
+            # Catch any other general exceptions and notify the user
+            print("[ERROR]: Exception in install_package(): %s" % e)
+            self.label_notify.set_name("label_style")
+            GLib.idle_add(self.label_notify.show)
+            GLib.idle_add(
+                self.label_notify.set_markup,
+                "<span foreground='red'><b>Package install failed (unknown error)</b></span>",
             )
         finally:
-            self.pkg_queue.put(None)
+            # Ensure that the package queue is always updated after the operation
+            self.pkg_queue.put(None)  # This can be used to signal the end of the task or stop the process
+
 
     def run_app(self, app_cmd):
         process = subprocess.run(
