@@ -153,19 +153,6 @@ def GUI(self, Gtk, GdkPixbuf):
         "https://www.facebook.com/Snigdha-OS/",
     )
 
-    # telegram
-    # tg_event = Gtk.EventBox()
-    # pbtg = GdkPixbuf.Pixbuf().new_from_file_at_size(
-    #     os.path.join(base_dir, "images/tg.png"), 28, 28
-    # )
-    # tgimage = Gtk.Image().new_from_pixbuf(pbtg)
-    # tg_event.add(tgimage)
-    # tg_event.connect(
-    #     "button_press_event",
-    #     self.on_social_clicked,
-    #     app_facebook,
-    # )
-
     # twitter
     tw_event = Gtk.EventBox()
     pbtw = GdkPixbuf.Pixbuf().new_from_file_at_size(
